@@ -15,6 +15,7 @@ namespace LuxeBouquetsBackEnd.Controllers
         public ProductController(DataBaseContext dbContext)
         {
             this.dbContext = dbContext;
+            this.urlConvertService = new UrlConvertService();
         }
 
         [HttpGet]

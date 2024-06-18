@@ -15,6 +15,7 @@ namespace LuxeBouquetsBackEnd.Controllers
         public SubscriptionPlanController(DataBaseContext dbContext)
         {
             this.dbContext = dbContext;
+            this.urlConvertService = new UrlConvertService();
         }
 
         [HttpGet]
