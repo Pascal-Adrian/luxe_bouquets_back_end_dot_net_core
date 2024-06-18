@@ -51,7 +51,7 @@ namespace LuxeBouquetsBackEnd.Controllers
         }
 
         [HttpPut]
-        [Route("{id:int}")]
+        [Route("id={id:int}")]
         public IActionResult UpdateCategory(int id, CategoryDto categoryDto)
         {
             var category = dbContext.Categories.Find(id);
@@ -70,7 +70,7 @@ namespace LuxeBouquetsBackEnd.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
+        [Route("id={id:int}")]
         public IActionResult DeleteCategory(int id)
         {
             var category = dbContext.Categories.Find(id);
