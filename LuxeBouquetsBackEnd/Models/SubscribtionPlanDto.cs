@@ -7,6 +7,6 @@ namespace LuxeBouquetsBackEnd.Models
         public bool FreeDelivery { get; set; }
         public required string[] Details { get; set; }
         public int Savings { get; set; }
-        public string? ImageUrl { get; set; }
+        public required string ImageUrl { get; set; }
     }
 }

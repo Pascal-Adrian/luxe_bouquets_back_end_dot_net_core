@@ -1,5 +1,6 @@
 using LuxeBouquetsBackEnd.Models;
 using LuxeBouquetsBackEnd.Models.Entities;
+using LuxeBouquetsBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LuxeBouquetsBackEnd.Controllers
@@ -9,6 +10,7 @@ namespace LuxeBouquetsBackEnd.Controllers
     public class SubscriptionPlanController : ControllerBase
     {
         private readonly DataBaseContext dbContext;
+        private readonly UrlConvertService urlConvertService;
 
         public SubscriptionPlanController(DataBaseContext dbContext)
         {
@@ -38,6 +40,13 @@ namespace LuxeBouquetsBackEnd.Controllers
         [HttpPost]
         public IActionResult CreateSubscriptionPlan(SubscribtionPlanDto subscribtionPlanDto)
         {
+            if (!urlConvertService.IsGoogleDriveUrl(subscribtionPlanDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            string imageUrl = urlConvertService.ConvertGoogleDriveUrl(subscribtionPlanDto.ImageUrl);
+
             var subscriptionPlan = new SubscriptionPlan
             {
                 Name = subscribtionPlanDto.Name,
@@ -45,7 +54,7 @@ namespace LuxeBouquetsBackEnd.Controllers
                 FreeDelivery = subscribtionPlanDto.FreeDelivery,
                 Details = subscribtionPlanDto.Details,
                 Savings = subscribtionPlanDto.Savings,
-                ImageUrl = subscribtionPlanDto.ImageUrl
+                ImageUrl = imageUrl,
             };
 
             dbContext.SubscriptionPlans.Add(subscriptionPlan);
@@ -58,6 +67,13 @@ namespace LuxeBouquetsBackEnd.Controllers
         [Route("id={id:int}")]
         public IActionResult UpdateSubscriptionPlan(int id, SubscribtionPlanDto subscribtionPlanDto)
         {
+            if (!urlConvertService.IsGoogleDriveUrl(subscribtionPlanDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            string imageUrl = urlConvertService.ConvertGoogleDriveUrl(subscribtionPlanDto.ImageUrl);
+
             var subscriptionPlan = dbContext.SubscriptionPlans.Find(id);
 
             if (subscriptionPlan == null)
@@ -70,7 +86,7 @@ namespace LuxeBouquetsBackEnd.Controllers
             subscriptionPlan.FreeDelivery = subscribtionPlanDto.FreeDelivery;
             subscriptionPlan.Details = subscribtionPlanDto.Details;
             subscriptionPlan.Savings = subscribtionPlanDto.Savings;
-            subscriptionPlan.ImageUrl = subscribtionPlanDto.ImageUrl;
+            subscriptionPlan.ImageUrl = imageUrl;
 
             dbContext.SaveChanges();
 

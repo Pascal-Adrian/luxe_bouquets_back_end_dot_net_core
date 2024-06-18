@@ -1,5 +1,6 @@
 using LuxeBouquetsBackEnd.Models;
 using LuxeBouquetsBackEnd.Models.Entities;
+using LuxeBouquetsBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LuxeBouquetsBackEnd.Controllers
@@ -9,6 +10,7 @@ namespace LuxeBouquetsBackEnd.Controllers
     public class ProductController : ControllerBase
     {
         private readonly DataBaseContext dbContext;
+        private readonly UrlConvertService urlConvertService;
 
         public ProductController(DataBaseContext dbContext)
         {
@@ -38,6 +40,13 @@ namespace LuxeBouquetsBackEnd.Controllers
         [HttpPost]
         public IActionResult CreateProduct(ProductDto productDto)
         {
+            if (!urlConvertService.IsGoogleDriveUrl(productDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            string imageUrl = urlConvertService.ConvertGoogleDriveUrl(productDto.ImageUrl);
+
             var category = dbContext.Categories.Find(productDto.CategoryId);
 
             if (category == null)
@@ -49,7 +58,7 @@ namespace LuxeBouquetsBackEnd.Controllers
             {
                 Name = productDto.Name,
                 Price = productDto.Price,
-                ImageUrl = productDto.ImageUrl,
+                ImageUrl = imageUrl,
                 Category = category,
                 SubCategory = productDto.SubCategory,
                 Description = productDto.Description
@@ -72,6 +81,13 @@ namespace LuxeBouquetsBackEnd.Controllers
                 return NotFound();
             }
 
+            if (!urlConvertService.IsGoogleDriveUrl(productDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            var imageUrl = urlConvertService.ConvertGoogleDriveUrl(productDto.ImageUrl);
+
             var category = dbContext.Categories.Find(productDto.CategoryId);
 
             if (category == null)
@@ -81,7 +97,7 @@ namespace LuxeBouquetsBackEnd.Controllers
 
             product.Name = productDto.Name;
             product.Price = productDto.Price;
-            product.ImageUrl = productDto.ImageUrl;
+            product.ImageUrl = imageUrl;
             product.Category = category;
             product.SubCategory = productDto.SubCategory;
             product.Description = productDto.Description;

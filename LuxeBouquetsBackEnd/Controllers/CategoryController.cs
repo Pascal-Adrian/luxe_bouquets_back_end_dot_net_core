@@ -1,5 +1,6 @@
 using LuxeBouquetsBackEnd.Models;
 using LuxeBouquetsBackEnd.Models.Entities;
+using LuxeBouquetsBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LuxeBouquetsBackEnd.Controllers
@@ -9,10 +10,12 @@ namespace LuxeBouquetsBackEnd.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly DataBaseContext dbContext;
+        private readonly UrlConvertService urlConvertService;
 
         public CategoryController(DataBaseContext dbContext)
         {
             this.dbContext = dbContext;
+            this.urlConvertService = new UrlConvertService();
         }
 
         [HttpGet]
@@ -38,10 +41,17 @@ namespace LuxeBouquetsBackEnd.Controllers
         [HttpPost]
         public IActionResult CreateCategory(CategoryDto categoryDto)
         {
+            if (!urlConvertService.IsGoogleDriveUrl(categoryDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            string imageUrl = urlConvertService.ConvertGoogleDriveUrl(categoryDto.ImageUrl);
+
             var category = new Category
             {
                 Name = categoryDto.Name,
-                ImageUrl = categoryDto.ImageUrl
+                ImageUrl = imageUrl,
             };
 
             dbContext.Categories.Add(category);
@@ -54,6 +64,13 @@ namespace LuxeBouquetsBackEnd.Controllers
         [Route("id={id:int}")]
         public IActionResult UpdateCategory(int id, CategoryDto categoryDto)
         {
+            if (!urlConvertService.IsGoogleDriveUrl(categoryDto.ImageUrl))
+            {
+                return BadRequest("Invalid image url, only Google Drive urls are allowed.");
+            }
+
+            string imageUrl = urlConvertService.ConvertGoogleDriveUrl(categoryDto.ImageUrl);
+
             var category = dbContext.Categories.Find(id);
 
             if (category == null)
@@ -62,7 +79,7 @@ namespace LuxeBouquetsBackEnd.Controllers
             }
 
             category.Name = categoryDto.Name;
-            category.ImageUrl = categoryDto.ImageUrl;
+            category.ImageUrl = imageUrl;
 
             dbContext.SaveChanges();
 

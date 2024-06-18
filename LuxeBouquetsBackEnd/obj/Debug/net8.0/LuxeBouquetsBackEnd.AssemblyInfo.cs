@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LuxeBouquetsBackEnd")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9f12b510f203c95cbd09a482d4c00d4cfd653fb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed65a8821937d935b27765dff315cc516cf57cb7")]
 [assembly: System.Reflection.AssemblyProductAttribute("LuxeBouquetsBackEnd")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LuxeBouquetsBackEnd")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
